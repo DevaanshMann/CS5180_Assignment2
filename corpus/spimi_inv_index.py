@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import heapq
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -11,20 +12,10 @@ MAX_OUT_BUFFER = 500
 
 # 1. Read Corpus
 
-def read_corpus(path):
-    docs = []
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.rstrip("\n")
-            if not line:
-                continue
-            parts = line.split("\t",1)
-            if len(parts) == 2:
-                docs.append((parts[0], parts[1]))
-
-    # sort by numeric part: D0001 -> 1
-    docs.sort(key = lambda x: int(x[0][1:]))
-    return docs
+def read_corpus_chunks(path):
+    return pd.read_csv(path, sep="\t", header=None,
+                       names=["doc_id", "text"],
+                       chunksize = DOCS_PER_BLOCK, encoding="utf-8")
 
 # 2. SPIMI block construction
 
