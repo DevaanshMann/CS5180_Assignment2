@@ -136,3 +136,37 @@ def merge_blocks(block_paths, output_path):
 
     print(f"  Final index written to {output_path}")
 
+# 4. Main
+
+def main():
+    print("SPIMI Inverted Index Construction")
+
+    # Step 1: Read all documents
+    print("Reading corpus...")
+    print("Building blocks (SPIMI phase)...")
+    block_paths = []
+    for block_num, chunk in enumerate(read_corpus_chunks(CORPUS_PATH), start=1):
+        batch = list(zip(chunk["doc_id"], chunk["text"]))
+        print(f"Block {block_num}: {chunk['doc_id'].iloc[0]} to {chunk['doc_id'].iloc[-1]}")
+        index = build_block(batch)
+        path  = write_block(index, block_num)
+        block_paths.append(path)
+
+    # step 3: Multiway merge into final index
+    print("\nMerging all blocks...")
+    merge_blocks(block_paths, "final_index.txt")
+
+    # Step 4: Quick Sanity check
+    with open("final_index.txt", "r", encoding="utf-8") as f:
+        lines = f.readlines()
+    print("\nCOMPLETE")
+    print(f"Total Terms in final index: {len(lines)}")
+    print("First 5 entries:")
+    for l in lines[:5]:
+        print(f"    {l.rstrip()}")
+    print("Last 5 entries:")
+    for l in lines[-5:]:
+        print(f"    {l.rstrip()}")
+
+if __name__ == "__main__":
+    main()
