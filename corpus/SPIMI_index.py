@@ -1,3 +1,8 @@
+# CS5180 - Information Retrieval
+# Assignment 2
+# Devaansh Mann
+
+
 import os
 import pandas as pd
 import heapq
