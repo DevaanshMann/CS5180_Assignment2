@@ -11,7 +11,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 CORPUS_PATH = "corpus.tsv"
 OUTPUT_DIR = "."
 NUM_BLOCKS = 10
-DOCS_PER_BLOCK = 100
+BLOCK_SIZE = 100
 MAX_INPUT_BUFFER = 100
 MAX_OUT_BUFFER = 500
 
@@ -20,7 +20,7 @@ MAX_OUT_BUFFER = 500
 def read_corpus_chunks(path):
     return pd.read_csv(path, sep="\t", header=None,
                        names=["doc_id", "text"],
-                       chunksize = DOCS_PER_BLOCK, encoding="utf-8")
+                       chunksize = BLOCK_SIZE, encoding="utf-8")
 
 # 2. SPIMI block construction
 
@@ -134,7 +134,7 @@ def merge_blocks(block_paths, output_path):
             if len(out_buf) >= MAX_OUT_BUFFER:
                 flush()
 
-        flush()  # final flush — still inside the with block
+        flush()  # final flush - inside the with block
 
     for r in readers:
         r.close()
